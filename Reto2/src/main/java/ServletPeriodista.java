@@ -18,7 +18,16 @@ public class ServletPeriodista  {
 	POST /login: recibe un periodista y valida el código y la contraseña,
 		devuelve el periodista con todos sus datos si es correcto
 		error 404 si no existe 
+
+  `idPeriodista` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `codigo` int NOT NULL,
+  `pwd` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `seguridad` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+
 */
+	
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		if ("/libros".equals(request.getServletPath())) {

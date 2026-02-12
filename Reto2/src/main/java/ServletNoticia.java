@@ -2,20 +2,26 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.sql.Connection;
 import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import dao.NoticiaDAO;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import models.Noticia;
+import util.Conexion;
 
 @WebServlet({ "/cambiaestoclaudiu/*", "/cambiaestoclaudiu" })
 public class ServletNoticia {
 
 	private Gson gson = new GsonBuilder().setDateFormat("").create();
 
+	private Connection con = Conexion.abreConexion();
+	
 /*
 	Todos los métodos reciben en la cabecera el código de seguridad del periodista,
 		y tenemos que validar que existe antes de insertar o borrar.
@@ -32,22 +38,38 @@ public class ServletNoticia {
 		error 404 si no existe la noticia 123
 		error 405 si se intenta hacer DELETE a /noticias	
 		error 403 si la noticia no es del periodista
+		
+		
+		
+  `idPeriodista` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `codigo` int NOT NULL,
+  `pwd` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `seguridad` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  
+  
+  `idnoticia` int NOT NULL AUTO_INCREMENT,
+  `idPeriodista` int NOT NULL,
+  `titular` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `texto` varchar(5000) COLLATE utf8mb4_general_ci NOT NULL,
+  `fecha` date NOT NULL,
 */
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		if ("/libros".equals(request.getServletPath())) {
-			List<Libro> lista = listaLibros();
+			List<Noticia> lista = NoticiaDAO.listar(con);
 			response.getWriter().write(gson.toJson(lista));
 		}
 		else { // /libro/xxxx
 			int id = Integer.parseInt(request.getPathInfo().substring(1));
-			Libro l = cargaLibro(id);
-			if (l == null) {
+			Noticia n = cargaLibro(id);
+			if (n == null) {
 					response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			} else {
-					response.getWriter().write(gson.toJson(l));
+					response.getWriter().write(gson.toJson(n));
 			}
 		}
 	}
@@ -56,12 +78,12 @@ public class ServletNoticia {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		if ("/libros".equals(request.getServletPath())) {
 	  		String s = leerReader(request.getReader());
-	  		Libro l = gson.fromJson(s, Libro.class);
-	  		int id = insertaLibro(l);
-	  		l.setId(id);
+	  		Noticia n = gson.fromJson(s, Noticia.class);
+	  		int id = insertaLibro(n);
+	  		n.setId(id);
 	  		response.setContentType("application/json");
 	  		response.setCharacterEncoding("UTF-8");
-	  		response.getWriter().write(gson.toJson(l));
+	  		response.getWriter().write(gson.toJson(n));
 		}
 		else { // /libro/xxxx
 	  		response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
@@ -73,18 +95,18 @@ public class ServletNoticia {
 	    
 		if ("/libros".equals(request.getServletPath())) {
 	      		response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-	    	}
-	    	else { // /libro/xxxx
-	      		int id = Integer.parseInt(request.getPathInfo().substring(1));
-	      		String s = leerReader(request.getReader());
-	      		Libro l = gson.fromJson(s, Libro.class);
-	      		if (l.getId() != id) {
-	        		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-	      		}
-	      		else {
-	        		actualizaLibro(l);
-	             	}
-	    	}
+    	}
+    	else { // /libro/xxxx
+      		int id = Integer.parseInt(request.getPathInfo().substring(1));
+      		String s = leerReader(request.getReader());
+      		Noticia n = gson.fromJson(s, Noticia.class);
+      		if (n.getId() != id) {
+        		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      		}
+      		else {
+        		actualizaLibro(n);
+         	}
+    	}
 	  }
 	
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
