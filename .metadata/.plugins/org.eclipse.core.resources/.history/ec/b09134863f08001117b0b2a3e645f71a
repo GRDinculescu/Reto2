@@ -1,0 +1,73 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@WebServlet({ "/cambiaestoclaudiu/*", "/cambiaestoclaudiu" })
+public class ServletPeriodista {
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+			PrintWriter writer = response.getWriter();
+		 writer.append("Respondiendo a: ")
+	      		.append(request.getContextPath()).append(request.getPathInfo()); 
+	}
+	
+	  protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+	    	
+			if ("/libros".equals(request.getServletPath())) {
+		      		String s = leerReader(request.getReader());
+		      		Libro l = gson.fromJson(s, Libro.class);
+		      		int id = insertaLibro(l);
+		      		l.setId(id);
+		      		response.setContentType("application/json");
+		      		response.setCharacterEncoding("UTF-8");
+		      		response.getWriter().write(gson.toJson(l));
+		    	}
+		    	else { // /libro/xxxx
+		      		response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+		    	}
+		  }
+
+	
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) {
+	    
+		if ("/libros".equals(request.getServletPath())) {
+	      		response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+	    	}
+	    	else { // /libro/xxxx
+	      		int id = Integer.parseInt(request.getPathInfo().substring(1));
+	      		String s = leerReader(request.getReader());
+	      		Libro l = gson.fromJson(s, Libro.class);
+	      		if (l.getId() != id) {
+	        		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	      		}
+	      		else {
+	        		actualizaLibro(l);
+	             	}
+	    	}
+	  }
+	
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
+		if ("/libros".equals(request.getServletPath())) {
+	  		response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+		}
+		else { // /libro/xxxx
+	      		int id = Integer.parseInt(request.getPathInfo().substring(1));
+	      		borraLibro(id);
+	    	}
+	  }
+		//lee el contenido de un Reader y lo devuelve en un String
+	public static String leerReader(Reader reader) {
+	   	char[] buffer = new char[1000];
+	   	int leidos;
+	   	StringBuilder sb = new StringBuilder();
+	   	while ((leidos = reader.read(buffer)) > 0) {
+	    		sb.append(buffer, 0, leidos);
+	   	}
+	   	reader.close();
+	   	return sb.toString();
+	}
+}

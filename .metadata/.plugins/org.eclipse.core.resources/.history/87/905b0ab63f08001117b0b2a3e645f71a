@@ -1,0 +1,26 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@WebServlet({ "/cambiaestoclaudiu/*", "/cambiaestoclaudiu" })
+public class ServletNoticia {
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		if ("/libros".equals(request.getServletPath())) {
+	  		String s = leerReader(request.getReader());
+	  		Libro l = gson.fromJson(s, Libro.class);
+	  		int id = insertaLibro(l);
+	  		l.setId(id);
+	  		response.setContentType("application/json");
+	  		response.setCharacterEncoding("UTF-8");
+	  		response.getWriter().write(gson.toJson(l));
+		}
+		else { // /libro/xxxx
+	  		response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+		}
+	}
+}

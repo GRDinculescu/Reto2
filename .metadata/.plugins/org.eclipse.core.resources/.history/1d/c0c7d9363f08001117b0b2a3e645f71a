@@ -1,0 +1,27 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@WebServlet({ "/cambiaestoclaudiu/*", "/cambiaestoclaudiu" })
+public class ServletPeriodista {
+
+  	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    		PrintWriter writer = response.getWriter();
+   		 writer.append("Respondiendo a: ")
+          		.append(request.getContextPath()).append(request.getPathInfo()); 
+	}
+
+  	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    		BufferedReader reader = request.getReader();
+    		PrintWriter writer = response.getWriter();
+    		writer.append("Recibido: ");
+    		String linea;
+   		while ((linea = reader.readLine()) != null) {
+      			writer.append(linea);
+   		}
+	}
+}

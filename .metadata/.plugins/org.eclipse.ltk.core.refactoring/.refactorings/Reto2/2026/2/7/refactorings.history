@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;ServletPeriodista.java&apos; to &apos;ServletPeriodista.java&apos;&#x0D;&#x0A;- Original project: &apos;Reto2&apos;&#x0D;&#x0A;- Destination element: &apos;ServletPeriodista.java&apos;&#x0D;&#x0A;- Original element: &apos;ServletPeriodista.java&apos;" description="Copy compilation unit" destination="/src\/main\/java&lt;{ServletPeriodista.java" element1="/src\/main\/java&lt;{ServletPeriodista.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1770920216402" units="1" version="1.0"/>
+</session>
