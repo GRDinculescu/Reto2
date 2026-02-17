@@ -1,1 +1,7 @@
 /.metadata/
+/.idea/
+/Servers/
+.classpath
+.project
+.settings
+.metadata
