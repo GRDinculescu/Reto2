@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.Reader;
 import java.sql.Connection;
 import java.util.List;
@@ -8,22 +6,33 @@ import java.util.List;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import dao.NoticiaDAO;
 import dao.PeriodistaDAO;
+import dao.NoticiaDAO;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.Noticia;
+import models.Periodista;
 import util.Conexion;
 
-@WebServlet({ "/noticia/*", "/noticias" })
+@WebServlet({ "/noticias", "/noticia/*" })
 public class ServletNoticia extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private Gson gson = new GsonBuilder().setDateFormat("").create();
 
 	private Connection con = Conexion.abreConexion();
+	
+	
+	@Override
+	protected void doOptions(HttpServletRequest arg0, HttpServletResponse response) throws ServletException, IOException {
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		response.addHeader("Access-Control-Allow-Headers", "content-type,x-seguridad");
+		//x-seguridad será el código de seguridad del periodista que pasaremos en la cabecera
+		response.addHeader("Access-Control-Allow-Methods","DELETE");
+	}
 	
 /*
 	Todos los métodos reciben en la cabecera el código de seguridad del periodista,
@@ -60,52 +69,59 @@ public class ServletNoticia extends HttpServlet {
 */
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
-
-		if (!PeriodistaDAO.existeCodigo(con, request.getHeader("codigoSeguridad"))) {
-			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-			return;
-		}
-		
-		if ("/noticias".equals(request.getServletPath())) {
-			List<Noticia> lista = NoticiaDAO.listar(con);
-			response.getWriter().write(gson.toJson(lista));
-		}
-		else { // /libro/xxxx
-			int id = Integer.parseInt(request.getPathInfo().substring(1));
-			/*
-			Noticia n = cargaLibro(id);
-			if (n == null) {
-					response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-			} else {
-					response.getWriter().write(gson.toJson(n));
+		try {
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.addHeader("Access-Control-Allow-Origin", "*");
+			
+			if ("/noticias".equals(request.getServletPath())) {
+				List<Noticia> lista = NoticiaDAO.listar(con);
+				response.getWriter().write(gson.toJson(lista));
 			}
-			*/
+			else { // /libro/xxxx
+		  		response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+			}
+		} catch (Exception e) {
+			System.err.println("Error interno:\n"+e.getMessage());
+	  		response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		if ("/noticias".equals(request.getServletPath())) {
-	  		String s = leerReader(request.getReader());
-	  		Noticia n = gson.fromJson(s, Noticia.class);
-	  		/*
-	  		int id = insertaLibro(n);
-	  		n.setId(id);
-	  		response.setContentType("application/json");
-	  		response.setCharacterEncoding("UTF-8");
-	  		response.getWriter().write(gson.toJson(n));
-	  		*/
-		}
-		else { // /libro/xxxx
-	  		response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+		try {
+			response.addHeader("Access-Control-Allow-Origin", "*");
+			if (!PeriodistaDAO.existeCodigo(con, request.getHeader("codigoSeguridad"))) {
+				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+				return;
+			}
+			
+			if ("/noticias".equals(request.getServletPath())) {
+		  		String s = leerReader(request.getReader());
+		  		Noticia n = gson.fromJson(s, Noticia.class);
+		  		int id = NoticiaDAO.insertar(con, n);
+		  		n.setId(id);
+		  		response.setContentType("application/json");
+		  		response.setCharacterEncoding("UTF-8");
+		  		response.getWriter().write(gson.toJson(n));
+			}
+			else { // /libro/xxxx
+		  		response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+			}
+		} catch (Exception e) {
+			System.err.println("Error interno:\n"+e.getMessage());
+	  		response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
 
-	
+/*	
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-	    
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		if (!PeriodistaDAO.existeCodigo(con, request.getHeader("codigoSeguridad"))) {
+			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+			return;
+		}
+		
 		if ("/noticias".equals(request.getServletPath())) {
 	      		response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
     	}
@@ -120,17 +136,36 @@ public class ServletNoticia extends HttpServlet {
         		//actualizaLibro(n);
          	}
     	}
-	  }
-	
-	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		if ("/noticias".equals(request.getServletPath())) {
-	  		response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-		}
-		else { // /libro/xxxx
-      		int id = Integer.parseInt(request.getPathInfo().substring(1));
-      		//borraLibro(id);
-    	}
 	}
+*/
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		try {
+			response.addHeader("Access-Control-Allow-Origin", "*");
+			String seguridad = request.getHeader("codigoSeguridad");
+			if (!PeriodistaDAO.existeCodigo(con, seguridad)) {
+				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+				return;
+			}
+			
+			if ("/noticias".equals(request.getServletPath())) {
+		  		response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+			}
+			else { // /libro/xxxx
+	      		int id = Integer.parseInt(request.getPathInfo().substring(1));
+	      		if (NoticiaDAO.buscar(con, id) == null)
+	    	  		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+	      		
+	      		if (!NoticiaDAO.verificarPropiedad(con, id, seguridad))
+	    	  		response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+	      		
+	      		NoticiaDAO.borrar(con, id);
+	    	}
+		} catch (Exception e) {
+			System.err.println("Error interno:\n"+e.getMessage());
+	  		response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
+	}
+
 		//lee el contenido de un Reader y lo devuelve en un String
 	public static String leerReader(Reader reader) throws IOException {
 	   	char[] buffer = new char[1000];
