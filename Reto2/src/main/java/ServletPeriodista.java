@@ -1,18 +1,28 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Reader;
+import java.sql.Connection;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 
+import dao.PeriodistaDAO;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import models.Noticia;
+import models.Periodista;
+import util.Conexion;
 
-@WebServlet({ "/cambiaestoclaudiu/*", "/cambiaestoclaudiu" })
-public class ServletPeriodista  {
+@WebServlet({ "/login/*", "/login" })
+public class ServletPeriodista extends HttpServlet {
 
 	private Gson gson = new GsonBuilder().setDateFormat("").create();
+	
+	private Connection con = Conexion.abreConexion();
 
 /*
 	POST /login: recibe un periodista y valida el código y la contraseña,
@@ -26,21 +36,42 @@ public class ServletPeriodista  {
   `pwd` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
   `seguridad` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
 
-*/
-	
+*/		
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		if ("/libros".equals(request.getServletPath())) {
+		if ("/login".equals(request.getServletPath())) {
 	  		String s = leerReader(request.getReader());
-	  		Libro l = gson.fromJson(s, Libro.class);
-	  		int id = insertaLibro(l);
-	  		l.setId(id);
-	  		response.setContentType("application/json");
-	  		response.setCharacterEncoding("UTF-8");
-	  		response.getWriter().write(gson.toJson(l));
+	  		try {
+		  		Periodista p = gson.fromJson(s, Periodista.class);
+		  		
+		  		Periodista p2 = PeriodistaDAO.loginPeriodista(con, p);
+		  		
+		  		if (p2 == null) {
+		  			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		  		}
+		  		
+		  		response.setContentType("application/json");
+		  		response.setCharacterEncoding("UTF-8");
+		  		response.getWriter().write(gson.toJson(p2));
+			} catch (JsonSyntaxException e) {
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			}
 		}
-		else { // /libro/xxxx
+		else { // /login/xxxx
 	  		response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 		}
 	}
+	
+	//lee el contenido de un Reader y lo devuelve en un String
+	public static String leerReader(Reader reader) throws IOException {
+	   	char[] buffer = new char[1000];
+	   	int leidos;
+	   	StringBuilder sb = new StringBuilder();
+	   	while ((leidos = reader.read(buffer)) > 0) {
+			sb.append(buffer, 0, leidos);
+	   	}
+	   	reader.close();
+	   	return sb.toString();
+	}
+	
 }
