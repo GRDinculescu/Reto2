@@ -13,7 +13,7 @@ public class Conexion {
 			String user = "web";
 			String password = "web";
 		
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 			
 			return DriverManager.getConnection(url1, user, password);
 		}

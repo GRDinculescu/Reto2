@@ -9,14 +9,17 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import dao.NoticiaDAO;
+import dao.PeriodistaDAO;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.Noticia;
 import util.Conexion;
 
-@WebServlet({ "/cambiaestoclaudiu/*", "/cambiaestoclaudiu" })
-public class ServletNoticia {
+@WebServlet({ "/noticia/*", "/noticias" })
+public class ServletNoticia extends HttpServlet {
+	private static final long serialVersionUID = 1L;
 
 	private Gson gson = new GsonBuilder().setDateFormat("").create();
 
@@ -59,31 +62,41 @@ public class ServletNoticia {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		if ("/libros".equals(request.getServletPath())) {
+
+		if (!PeriodistaDAO.existeCodigo(con, request.getHeader("codigoSeguridad"))) {
+			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+			return;
+		}
+		
+		if ("/noticias".equals(request.getServletPath())) {
 			List<Noticia> lista = NoticiaDAO.listar(con);
 			response.getWriter().write(gson.toJson(lista));
 		}
 		else { // /libro/xxxx
 			int id = Integer.parseInt(request.getPathInfo().substring(1));
+			/*
 			Noticia n = cargaLibro(id);
 			if (n == null) {
 					response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			} else {
 					response.getWriter().write(gson.toJson(n));
 			}
+			*/
 		}
 	}
 
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		if ("/libros".equals(request.getServletPath())) {
+		if ("/noticias".equals(request.getServletPath())) {
 	  		String s = leerReader(request.getReader());
 	  		Noticia n = gson.fromJson(s, Noticia.class);
+	  		/*
 	  		int id = insertaLibro(n);
 	  		n.setId(id);
 	  		response.setContentType("application/json");
 	  		response.setCharacterEncoding("UTF-8");
 	  		response.getWriter().write(gson.toJson(n));
+	  		*/
 		}
 		else { // /libro/xxxx
 	  		response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
@@ -93,7 +106,7 @@ public class ServletNoticia {
 	
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
 	    
-		if ("/libros".equals(request.getServletPath())) {
+		if ("/noticias".equals(request.getServletPath())) {
 	      		response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
     	}
     	else { // /libro/xxxx
@@ -104,18 +117,18 @@ public class ServletNoticia {
         		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       		}
       		else {
-        		actualizaLibro(n);
+        		//actualizaLibro(n);
          	}
     	}
 	  }
 	
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		if ("/libros".equals(request.getServletPath())) {
+		if ("/noticias".equals(request.getServletPath())) {
 	  		response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 		}
 		else { // /libro/xxxx
       		int id = Integer.parseInt(request.getPathInfo().substring(1));
-      		borraLibro(id);
+      		//borraLibro(id);
     	}
 	}
 		//lee el contenido de un Reader y lo devuelve en un String

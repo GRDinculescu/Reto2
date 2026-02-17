@@ -21,12 +21,20 @@ public class NoticiaDAO {
 			
 			ResultSet rs = st.getResultSet();
 			while (rs.next()) {
-				Periodista p = new Periodista();
+				Periodista p = new Periodista(
+						rs.getString("nombre"),
+						rs.getString("email"),
+						rs.getInt("codigo"),
+						rs.getString("pwd"),
+						rs.getString("seguridad"));
+				p.setId(rs.getInt("idPeriodista"));
+				
 				Noticia n = new Noticia(
 						p,
 						rs.getString("titular"),
 						rs.getString("texto"),
 						rs.getDate("fecha"));
+				n.setId(rs.getInt("idnoticia"));
 				
 				noticias.add(n);
 			}

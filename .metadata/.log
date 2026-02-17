@@ -397,3 +397,55 @@ Binding(ALT+INSERT,
 		,,true),null),
 	org.eclipse.ui.defaultAcceleratorConfiguration,
 	org.eclipse.ui.contexts.window,,,user)
+!SESSION 2026-02-17 14:59:43.394 -----------------------------------------------
+eclipse.buildId=4.37.0.20250905-1455
+java.version=23
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=es_ES
+Framework arguments:  -product org.eclipse.epp.package.jee.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.jee.product
+
+!ENTRY ch.qos.logback.classic 1 0 2026-02-17 14:59:46.389
+!MESSAGE Activated before the state location was initialized. Retry after the state location is initialized.
+
+!ENTRY org.eclipse.lemminx.uber-jar 4 0 2026-02-17 14:59:46.555
+!MESSAGE bundle org.eclipse.lemminx.uber-jar:0.31.0 (612) Component descriptor entry 'OSGI-INF/*.xml' not found
+
+!ENTRY ch.qos.logback.classic 1 0 2026-02-17 14:59:49.518
+!MESSAGE Logback config file: C:\Users\Giovanni\3D Objects\Clase\2DAM\Procesos\Tema5\Reto2\.metadata\.plugins\org.eclipse.m2e.logback\logback.2.7.100.20250418-1315.xml
+
+!ENTRY org.eclipse.jface 2 0 2026-02-17 14:59:54.740
+!MESSAGE Keybinding conflicts occurred.  They may interfere with normal accelerator operation.
+!SUBENTRY 1 org.eclipse.jface 2 0 2026-02-17 14:59:54.740
+!MESSAGE A conflict occurred for ALT+INSERT:
+Binding(ALT+INSERT,
+	ParameterizedCommand(Command(org.eclipse.jdt.ui.edit.text.java.generate.tostring,Generate toString(),
+		Generates the toString() method for the type,
+		Category(org.eclipse.jdt.ui.category.source,Source,Java Source Actions,true),
+		WorkbenchHandlerServiceHandler("org.eclipse.jdt.ui.edit.text.java.generate.tostring"),
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,user)
+Binding(ALT+INSERT,
+	ParameterizedCommand(Command(org.eclipse.jdt.ui.edit.text.java.create.getter.setter,Generate Getters and Setters,
+		Generate Getter and Setter methods for type's fields,
+		Category(org.eclipse.jdt.ui.category.source,Source,Java Source Actions,true),
+		WorkbenchHandlerServiceHandler("org.eclipse.jdt.ui.edit.text.java.create.getter.setter"),
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,user)
+Binding(ALT+INSERT,
+	ParameterizedCommand(Command(org.eclipse.jdt.ui.edit.text.java.generate.constructor.using.fields,Generate Constructor using Fields,
+		Choose fields to initialize and constructor from superclass to call ,
+		Category(org.eclipse.jdt.ui.category.source,Source,Java Source Actions,true),
+		WorkbenchHandlerServiceHandler("org.eclipse.jdt.ui.edit.text.java.generate.constructor.using.fields"),
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,user)
+
+!ENTRY org.eclipse.egit.ui 2 0 2026-02-17 14:59:55.040
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\Giovanni'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
