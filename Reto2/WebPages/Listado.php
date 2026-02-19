@@ -55,12 +55,13 @@
                     const tabla = document.getElementById("tablaDatos");
                     data.forEach(noticia => {
                         const fila = document.createElement("tr");
+                        fila.id = `noticia-${noticia.id}`;
                         fila.innerHTML = `
                             <td>${noticia.fecha}</td>
                             <td>${noticia.titular}</td>
                             <td>${noticia.texto}</td>
                             <td>
-                                <a id="btnBorrar${noticia.id}" href="#" class="btn btn-sm btn-primary p-1 d-flex align-items-center justify-content-center">
+                                <a id="btnBorrar" href="#" class="btn btn-sm btn-primary p-1 d-flex align-items-center justify-content-center">
                                     <img src="./images/ic_delete.png" alt="borrar" class="d-block" style="width: 25px">
                                 </a>
                             </td>
@@ -71,7 +72,33 @@
             </script>
         </tbody>
     </table>
-    <script src="./JS/noticias.js"></script>
+    <script>
+        let elementos = document.querySelectorAll("btnBorrar");
+        console.log("Elementos encontrados para borrar:", elementos.length);
+        elementos.forEach((el) => {
+            el.addEventListener("click", (e) => {
+                e.preventDefault();
+                const idNoticia = el.closest("tr").id.split("-")[1];
+                console.log("ID Noticia a eliminar:", idNoticia);
+                fetch(`http://localhost:8080/Reto2/noticia/${idNoticia}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-seguridad": '10db0cf8-0151-4045-baae-85004406664e'
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        document.getElementById(`noticia-${idNoticia}`).remove();
+                    } else {
+                        alert("Error al eliminar la noticia");
+                    }
+                }).catch(error => {
+                    console.error("Error:", error);
+                    alert("Error al eliminar la noticia");
+                })
+            })
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

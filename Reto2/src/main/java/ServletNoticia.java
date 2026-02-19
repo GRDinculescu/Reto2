@@ -92,7 +92,7 @@ public class ServletNoticia extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		try {
 			response.addHeader("Access-Control-Allow-Origin", "*");
-			if (!PeriodistaDAO.existeCodigo(con, request.getHeader("codigoSeguridad"))) {
+			if (!PeriodistaDAO.existeCodigo(con, request.getHeader("x-seguridad"))) {
 				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 				return;
 			}
@@ -118,7 +118,7 @@ public class ServletNoticia extends HttpServlet {
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		try {
 			response.addHeader("Access-Control-Allow-Origin", "*");
-			String seguridad = request.getHeader("codigoSeguridad");
+			String seguridad = request.getHeader("x-seguridad");
 			if (!PeriodistaDAO.existeCodigo(con, seguridad)) {
 				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 				return;
