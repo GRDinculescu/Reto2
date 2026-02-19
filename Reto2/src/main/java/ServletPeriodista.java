@@ -51,7 +51,6 @@ public class ServletPeriodista extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		response.addHeader("Access-Control-Allow-Origin", "*");
-		System.out.println(con);
 		if ("/login".equals(request.getServletPath())) {
 	  		String s = leerReader(request.getReader());
 	  		try {

@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once("PHP/Session.php");
+require_once("PHP/sessions.php");
 
 if (getSeguridad() == null) {
     header("Location: Login.php");
@@ -37,16 +37,18 @@ if (getSeguridad() == null) {
                         'Content-type': 'application/json; charset=UTF-8',
                         'x-seguridad': '<?php echo getSeguridad(); ?>'
                     }
-                }
-                );
+                });
                 
                 // Validar si la petición fue exitosa (status 200-299)
                 if (!respuesta.ok) {
                     throw new Error(`Error en la red: ${respuesta.status}`);
+                    document.getElementById("error").style.display = 'block';
+                    document.getElementById("error").innerText = "Error al guardar la noticia ("+${respuesta.status}+")";
+
+                } else {
+                    document.location.href = 'Listado.php';
                 }
 
-                const datos = await respuesta.json(); // Convertir la respuesta a JSON
-                console.log(datos);
             } catch (error) {
                 console.error('Hubo un problema con la petición:', error);
             }
@@ -59,6 +61,7 @@ if (getSeguridad() == null) {
     <div style="background-color: #f0f0f0; width: 500px; border-radius: 10px; border: 1px gray solid;" class="px-4 py-3 mt-3">
         <h3 id="nombre">aaaaaaaaaaaaa</h3>
         <form action="" method="post">
+            <div id="error" class="alert alert-danger mt-3" style="display: none;"></div>
             <div class="form-group row">
                 <label for="titular">Titular</label>
                 <input type="text" name="titular" id="titular" class="form-control" placeholder="Titular...">

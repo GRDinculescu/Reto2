@@ -37,14 +37,6 @@
                         document.getElementById("error").innerText = "Usuario o contraseña incorrectos";
                     }
                 });
-                
-                // Validar si la petición fue exitosa (status 200-299)
-                if (!respuesta.ok) {
-                throw new Error(`Error en la red: ${respuesta.status}`);
-                }
-
-                const datos = await respuesta.json(); // Convertir la respuesta a JSON
-                console.log(datos);
             } catch (error) {
                 console.error('Hubo un problema con la petición:', error);
             }
