@@ -1,7 +1,7 @@
 package models;
 
 public class Periodista {
-	private int id;
+	private int idPeriodista;
 	private String nombre;
 	private String email;
 	private int codigo;
@@ -15,11 +15,12 @@ public class Periodista {
 		this.pwd = pwd;
 		this.seguridad = seguridad;
 	}
+	
 	public int getId() {
-		return id;
+		return idPeriodista;
 	}
 	public void setId(int id) {
-		this.id = id;
+		this.idPeriodista = id;
 	}
 	public String getNombre() {
 		return nombre;
@@ -53,7 +54,7 @@ public class Periodista {
 	}
 	@Override
 	public String toString() {
-		return "Periodista [id=" + id + ", nombre=" + nombre + ", email=" + email + ", codigo=" + codigo + ", pwd="
+		return "Periodista [id=" + idPeriodista + ", nombre=" + nombre + ", email=" + email + ", codigo=" + codigo + ", pwd="
 				+ pwd + ", seguridad=" + seguridad + "]";
 	}
 }

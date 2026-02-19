@@ -10,7 +10,7 @@ import java.util.Date;
   `fecha` date NOT NULL,
 */
 public class Noticia {
-	private int id;
+	private int idNoticia;
 	private Periodista periodista;
 	private String titular;
 	private String texto;
@@ -24,10 +24,10 @@ public class Noticia {
 	}
 	
 	public int getId() {
-		return id;
+		return idNoticia;
 	}
 	public void setId(int id) {
-		this.id = id;
+		this.idNoticia = id;
 	}
 	public Periodista getPeriodista() {
 		return periodista;
@@ -56,7 +56,7 @@ public class Noticia {
 	
 	@Override
 	public String toString() {
-		return "Noticia [id=" + id + ", periodista=" + periodista + ", titular=" + titular + ", texto=" + texto
+		return "Noticia [id=" + idNoticia + ", periodista=" + periodista + ", titular=" + titular + ", texto=" + texto
 				+ ", fecha=" + fecha + "]";
 	}
 }

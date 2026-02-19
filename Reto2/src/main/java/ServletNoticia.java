@@ -21,7 +21,7 @@ import util.Conexion;
 public class ServletNoticia extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	private Gson gson = new GsonBuilder().setDateFormat("").create();
+	private Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy").create();
 
 	private Connection con = Conexion.abreConexion();
 	
@@ -113,31 +113,7 @@ public class ServletNoticia extends HttpServlet {
 	  		response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
-
-/*	
-	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		response.addHeader("Access-Control-Allow-Origin", "*");
-		if (!PeriodistaDAO.existeCodigo(con, request.getHeader("codigoSeguridad"))) {
-			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-			return;
-		}
-		
-		if ("/noticias".equals(request.getServletPath())) {
-	      		response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-    	}
-    	else { // /libro/xxxx
-      		int id = Integer.parseInt(request.getPathInfo().substring(1));
-      		String s = leerReader(request.getReader());
-      		Noticia n = gson.fromJson(s, Noticia.class);
-      		if (n.getId() != id) {
-        		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-      		}
-      		else {
-        		//actualizaLibro(n);
-         	}
-    	}
-	}
-*/
+	
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		try {
 			response.addHeader("Access-Control-Allow-Origin", "*");

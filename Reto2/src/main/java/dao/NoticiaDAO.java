@@ -46,7 +46,7 @@ public class NoticiaDAO {
 	
 	public static Noticia buscar(Connection con, int id) throws SQLException {
 		String q = "select * from noticia n "
-				+ "inner join periodista p on n.idPeriodista = p.idPeriodista"
+				+ "inner join periodista p on n.idPeriodista = p.idPeriodista "
 				+ "where idnoticia = ?";
 		PreparedStatement st = con.prepareStatement(q);
 		st.setInt(1, id);
@@ -77,11 +77,11 @@ public class NoticiaDAO {
 	public static int insertar(Connection con, Noticia n) throws SQLException {
 		String q = "insert into noticia(idPeriodista, titular, texto, fecha)"
 				+ "values (?,?,?,?)";
-		PreparedStatement st = con.prepareStatement(q);
+		PreparedStatement st = con.prepareStatement(q, PreparedStatement.RETURN_GENERATED_KEYS);
 		st.setInt(1, n.getPeriodista().getId());
 		st.setString(2, n.getTitular());
 		st.setString(3, n.getTexto());
-		st.setDate(4, (Date) n.getFecha());
+		st.setDate(4, new Date(n.getFecha().getTime()));
 		st.executeUpdate();
 
 		ResultSet rs = st.getGeneratedKeys();
@@ -91,8 +91,8 @@ public class NoticiaDAO {
 	}
 	
 	public static boolean verificarPropiedad(Connection con, int id, String seguridad) throws SQLException {
-		String q = "select 1 from noticia n"
-				+ "inner join periodista p on n.idPeriodista = p.idPeriodista"
+		String q = "select 1 from noticia n "
+				+ "inner join periodista p on n.idPeriodista = p.idPeriodista "
 				+ "where idnoticia = ? and seguridad = ?";
 		PreparedStatement st = con.prepareStatement(q);
 		st.setInt(1, id);
@@ -104,11 +104,9 @@ public class NoticiaDAO {
 		if (rs.next()) return true;
 		return false;
 	}
-	
-
-	
+		
 	public static void borrar(Connection con, int id) throws SQLException {
-		String q = "delete from noticia where idnoticia = ?";
+		String q = "delete from noticia where idnoticia = ?;";
 		PreparedStatement st = con.prepareStatement(q);
 		st.setInt(1, id);
 		st.executeUpdate();
