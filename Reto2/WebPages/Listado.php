@@ -1,3 +1,9 @@
+<?php
+    include_once './PHP/sessions.php';
+    $codigoSeguridad = getSession();
+?>
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -44,6 +50,7 @@
             ?>
         </tbody>
     </table>
+    <script src="./JS/noticias.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
