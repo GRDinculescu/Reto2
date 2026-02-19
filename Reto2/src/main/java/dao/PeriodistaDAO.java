@@ -26,26 +26,28 @@ public class PeriodistaDAO {
 	
 	public static Periodista loginPeriodista(Connection con, Periodista periodista) {
 		try {
-			String q = "select 1 from periodista where codigo = ? and pwd = ?";
+			String q = "select * from periodista where codigo = ? and pwd = ?";
 			
 			PreparedStatement st = con.prepareStatement(q);
 			st.setInt(1, periodista.getCodigo());
-			st.setString(1, periodista.getPwd());
+			st.setString(2, periodista.getPwd());
 			st.execute();
 			
 			ResultSet rs = st.getResultSet();
 			
-			Periodista p = new Periodista(
-					rs.getString("nombre"),
-					rs.getString("email"),
-					rs.getInt("codigo"),
-					rs.getString("pwd"),
-					rs.getString("seguridad"));
-			p.setId(rs.getInt("idPeriodista"));
-			
-			if (rs.next()) return p;
+			if (rs.next()) {
+				Periodista p = new Periodista(
+						rs.getString("nombre"),
+						rs.getString("email"),
+						rs.getInt("codigo"),
+						rs.getString("pwd"),
+						rs.getString("seguridad"));
+				p.setId(rs.getInt("idPeriodista"));
+				return p;
+			}
 		} catch (Exception e) {
-			System.err.println("Error al comprobar el codigo\n"+e.getMessage());
+			System.err.println("Error en login\n");
+			e.printStackTrace();
 		}
 		return null;
 	}

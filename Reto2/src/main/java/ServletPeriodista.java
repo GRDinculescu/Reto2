@@ -39,15 +39,22 @@ public class ServletPeriodista extends HttpServlet {
 */		
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		System.out.println(con);
 		if ("/login".equals(request.getServletPath())) {
 	  		String s = leerReader(request.getReader());
 	  		try {
 		  		Periodista p = gson.fromJson(s, Periodista.class);
 		  		
+		  		if (p == null) {
+		  			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		  			return;
+		  		}
+		  		
 		  		Periodista p2 = PeriodistaDAO.loginPeriodista(con, p);
 		  		
 		  		if (p2 == null) {
 		  			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		  			return;
 		  		}
 		  		
 		  		response.setContentType("application/json");
@@ -68,10 +75,9 @@ public class ServletPeriodista extends HttpServlet {
 	   	int leidos;
 	   	StringBuilder sb = new StringBuilder();
 	   	while ((leidos = reader.read(buffer)) > 0) {
-			sb.append(buffer, 0, leidos);
+    		sb.append(buffer, 0, leidos);
 	   	}
 	   	reader.close();
 	   	return sb.toString();
 	}
-	
 }
