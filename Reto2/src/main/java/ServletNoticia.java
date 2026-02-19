@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.Noticia;
-import models.Periodista;
 import util.Conexion;
 
 @WebServlet({ "/noticias", "/noticia/*" })
@@ -74,8 +73,10 @@ public class ServletNoticia extends HttpServlet {
 			response.setCharacterEncoding("UTF-8");
 			response.addHeader("Access-Control-Allow-Origin", "*");
 			
+			String seguridad = request.getHeader("x-seguridad");
+			
 			if ("/noticias".equals(request.getServletPath())) {
-				List<Noticia> lista = NoticiaDAO.listar(con);
+				List<Noticia> lista = NoticiaDAO.listar(con, seguridad);
 				response.getWriter().write(gson.toJson(lista));
 			}
 			else { // /libro/xxxx

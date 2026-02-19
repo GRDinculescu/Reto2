@@ -1,9 +1,9 @@
 <?php
+    session_start();
     include_once './PHP/sessions.php';
-    $codigoSeguridad = getSession();
+    $codigoSeguridad = getSeguridad();
+    $nombre = getNombre();
 ?>
-
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -13,7 +13,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="container py-5">
-    <h3 id="nombre"></h3>
+    <h3 id="nombre">Listado de noticias de <?= $nombre ?></h3>
     <form action="" method="post" >
         <div class="d-flex mt-2 gap-2">
             <input type="text" name="txtBuscar" id="txtBuscar" class="form-control w-25">
@@ -34,20 +34,41 @@
             </tr>
         </thead>
         <tbody id="tablaDatos">
-            <?php
-                for ($i=0; $i < 20; $i++) { 
-                    echo '<tr class="table-primary">
-                            <td class="text-danger">2024-06-01</td>
-                            <td>Juan Pérez</td>
-                            <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</td>
+            <script>
+                fetch("http://localhost:8080/Reto2/noticias", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-seguridad": '10db0cf8-0151-4045-baae-85004406664e'
+                    }
+                }).then(response => response.json())
+                .then(data => {
+                    if (data.length === 0) {
+                        const tabla = document.getElementById("tablaDatos");
+                        const fila = document.createElement("tr");
+                        fila.innerHTML = `
+                            <td colspan="4" class="text-center">No hay noticias disponibles</td>
+                        `;
+                        tabla.appendChild(fila);
+                        return;
+                    }
+                    const tabla = document.getElementById("tablaDatos");
+                    data.forEach(noticia => {
+                        const fila = document.createElement("tr");
+                        fila.innerHTML = `
+                            <td>${noticia.fecha}</td>
+                            <td>${noticia.titular}</td>
+                            <td>${noticia.texto}</td>
                             <td>
-                                <a href="#" class="btn btn-sm btn-primary p-1 d-flex align-items-center justify-content-center">
+                                <a id="btnBorrar${noticia.id}" href="#" class="btn btn-sm btn-primary p-1 d-flex align-items-center justify-content-center">
                                     <img src="./images/ic_delete.png" alt="borrar" class="d-block" style="width: 25px">
                                 </a>
                             </td>
-                        </tr>';
-                }
-            ?>
+                        `;
+                        tabla.appendChild(fila);
+                    })
+                })
+            </script>
         </tbody>
     </table>
     <script src="./JS/noticias.js"></script>
