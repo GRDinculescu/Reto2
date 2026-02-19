@@ -1,3 +1,14 @@
+<?php
+session_start();
+require_once("PHP/Session.php");
+
+if (getSeguridad() == null) {
+    header("Location: Login.php");
+    exit();
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,6 +16,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listado</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+
+        async function obtenerDatos(e) {
+
+            e.preventDefault();
+            document.getElementById("error").style.display = 'none';
+            document.getElementById("error").innerText = "";
+
+            try {
+                const respuesta = await fetch(
+                'http://localhost:8080/Reto2/noticia', {
+                    body: JSON.stringify({
+                        titular: document.getElementById('titular').value,
+                        texto: document.getElementById('texto').value,
+                        fecha: document.getElementById('fecha').value,
+                    }),
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                        'x-seguridad': '<?php echo getSeguridad(); ?>'
+                    }
+                }
+                );
+                
+                // Validar si la petición fue exitosa (status 200-299)
+                if (!respuesta.ok) {
+                    throw new Error(`Error en la red: ${respuesta.status}`);
+                }
+
+                const datos = await respuesta.json(); // Convertir la respuesta a JSON
+                console.log(datos);
+            } catch (error) {
+                console.error('Hubo un problema con la petición:', error);
+            }
+        }
+
+    </script>
+
 </head>
 <body class="container px-5 d-flex vh-100 justify-content-center align-items-center" style="background-color: gainsboro;">
     <div style="background-color: #f0f0f0; width: 500px; border-radius: 10px; border: 1px gray solid;" class="px-4 py-3 mt-3">

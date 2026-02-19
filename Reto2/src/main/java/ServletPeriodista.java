@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
 import dao.PeriodistaDAO;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +25,16 @@ public class ServletPeriodista extends HttpServlet {
 	
 	private Connection con = Conexion.abreConexion();
 
+	
+	@Override
+	protected void doOptions(HttpServletRequest arg0, HttpServletResponse response) throws ServletException, IOException {
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		response.addHeader("Access-Control-Allow-Headers", "content-type,x-seguridad");
+		//x-seguridad será el código de seguridad del periodista que pasaremos en la cabecera
+		response.addHeader("Access-Control-Allow-Methods","DELETE");
+	}
+
+	
 /*
 	POST /login: recibe un periodista y valida el código y la contraseña,
 		devuelve el periodista con todos sus datos si es correcto
@@ -39,6 +50,7 @@ public class ServletPeriodista extends HttpServlet {
 */		
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		response.addHeader("Access-Control-Allow-Origin", "*");
 		System.out.println(con);
 		if ("/login".equals(request.getServletPath())) {
 	  		String s = leerReader(request.getReader());
