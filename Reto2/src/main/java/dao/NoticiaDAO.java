@@ -13,11 +13,13 @@ import models.Noticia;
 import models.Periodista;
 
 public class NoticiaDAO {
-	public static List<Noticia> listar(Connection con) throws SQLException {
+	public static List<Noticia> listar(Connection con, String seguridad) throws SQLException {
 		String q = "select * from noticia n "
-				+ "inner join periodista p on n.idPeriodista = p.idPeriodista";
-		Statement st = con.createStatement();
-		st.execute(q);
+				+ "inner join periodista p on n.idPeriodista = p.idPeriodista "
+				+ "where p.seguridad = ?";
+		PreparedStatement st = con.prepareStatement(q);
+		st.setString(1, seguridad);
+		st.execute();
 		
 		List<Noticia> noticias = new ArrayList<>();
 		
